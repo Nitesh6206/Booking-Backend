@@ -285,4 +285,4 @@ Contributing
 **License**
 MIT License. See LICENSE for details.
 
-Project developed by Nitesh Kumar.For support, contact: niteshsingh6206@gmial.com or GitHub Issues.
+Project developed by Nitesh Kumar.For support, contact: niteshsingh6206@gmail.com or GitHub Issues.
