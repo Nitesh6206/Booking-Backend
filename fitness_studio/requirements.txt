@@ -1,0 +1,5 @@
+# requirements.txt
+Django==4.2.7
+djangorestframework==3.14.0
+pytz==2023.3
+psycopg2-binary==2.9.9
