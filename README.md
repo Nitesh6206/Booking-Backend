@@ -44,44 +44,44 @@ A Django REST Framework API for managing fitness classes and bookings. Users can
    cd fitness-studio-booking
 
 
-Create and Activate a Virtual Environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+2. **Create and Activate a Virtual Environment**
+- python -m venv venv
+- source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 
-Install Dependencies
-pip install -r requirements.txt
+3. **Install Dependencies**
+- pip install -r requirements.txt
 
 Note: If requirements.txt is not provided, install core dependencies:
 pip install django djangorestframework pytz
 
 
 Configure Environment VariablesCreate a .env file in the project root and add the following:
-SECRET_KEY=your-django-secret-key
+SECRET_KEY=your-django-secret-key right now not using but use may be in future
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 TIME_ZONE=Asia/Kolkata
 
 Generate a secure SECRET_KEY using a tool like Djecrety.
 
-Apply Migrations
-python manage.py makemigrations
-python manage.py migrate
+**Apply Migrations**
+- python manage.py makemigrations
+- python manage.py migrate
 
 
-Create a Superuser (Optional)For admin access:
-python manage.py createsuperuser
+**Create a Superuser (Optional)For admin access:**
+- python manage.py createsuperuser
 
 
-Run the Development Server
-python manage.py runserver
+**Run the Development Server**
+_python manage.py runserver
 
 Access the API at http://localhost:8000/ and the admin panel at http://localhost:8000/admin/.
 
 
-API Endpoints
+## API Endpoints
 Base URL
-http://localhost:8000/
+** http://localhost:8000/ **
 1. Fitness Classes (/classes/)
 Handles CRUD operations for fitness classes.
 
