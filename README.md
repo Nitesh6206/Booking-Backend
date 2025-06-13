@@ -1,49 +1,47 @@
-Fitness Studio Booking System
-A Django REST Framework-based API for managing fitness classes and bookings. This project allows users to create, view, and update fitness classes, as well as book and cancel class reservations. It includes validation for class scheduling, slot availability, and duplicate bookings.
-Table of Contents
+# Fitness Studio Booking System
 
-Features
-Technologies
-Prerequisites
-Setup Instructions
-API Endpoints
-Usage
-Testing
-Contributing
-License
+A Django REST Framework API for managing fitness classes and bookings. Users can create, view, and update fitness classes (e.g., Yoga, Zumba, HIIT) and book or cancel reservations with validation for availability, timezones, and duplicates.
 
-Features
+## Table of Contents
+- [Features](#features)
+- [Technologies](#technologies)
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+- [API Endpoints](#api-endpoints)
+- [Usage](#usage)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
 
-Create, retrieve, and update fitness classes (e.g., Yoga, Zumba, HIIT).
-Book and cancel class reservations with email-based authorization.
-Timezone-aware class scheduling with validation for future dates.
-Slot management to prevent overbooking.
-Authentication and authorization for booking operations.
-Comprehensive logging for debugging and monitoring.
-Unit tests for API endpoints.
+## Features
+- Create, retrieve, and update fitness classes with timezone-aware scheduling.
+- Book and cancel class reservations with email-based authorization.
+- Validate class slots, future dates, and duplicate bookings.
+- Comprehensive logging for debugging.
+- Unit tests for API functionality.
+- Admin panel for managing classes and bookings.
 
-Technologies
+## Technologies
+- **Backend**: Django 4.x, Django REST Framework
+- **Database**: SQLite (default, supports PostgreSQL/MySQL)
+- **Python**: 3.8+
+- **Dependencies**: Managed via `requirements.txt`
+- **Timezone Handling**: `pytz`
+- **Testing**: Django test framework
 
-Backend: Django 4.x, Django REST Framework
-Database: SQLite (default, configurable for PostgreSQL/MySQL)
-Python: 3.8+
-Dependencies: Managed via requirements.txt
-Timezone Handling: pytz for timezone conversions
-Testing: Django's built-in test framework
+## Prerequisites
+- Python 3.8 or higher
+- pip (Python package manager)
+- Virtualenv (recommended)
+- Git
+- Terminal or command prompt
 
-Prerequisites
+## Setup Instructions
 
-Python 3.8 or higher
-pip (Python package manager)
-Virtualenv (recommended)
-Git
-Access to a terminal/command prompt
-
-Setup Instructions
-
-Clone the Repository
-git clone https://github.com/your-username/fitness-studio-booking.git
-cd fitness-studio-booking
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/fitness-studio-booking.git
+   cd fitness-studio-booking
 
 
 Create and Activate a Virtual Environment
