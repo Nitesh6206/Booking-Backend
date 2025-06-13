@@ -56,11 +56,11 @@ Note: If requirements.txt is not provided, install core dependencies:
 pip install django djangorestframework pytz
 
 
-Configure Environment VariablesCreate a .env file in the project root and add the following:
-SECRET_KEY=your-django-secret-key right now not using but use may be in future
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-TIME_ZONE=Asia/Kolkata
+**Configure Environment VariablesCreate a .env file in the project root and add the following:**
+- SECRET_KEY=your-django-secret-key right now not using but use may be in future
+- DEBUG=True
+- ALLOWED_HOSTS=localhost,127.0.0.1
+- TIME_ZONE=Asia/Kolkata
 
 Generate a secure SECRET_KEY using a tool like Djecrety.
 
@@ -81,7 +81,7 @@ Access the API at http://localhost:8000/ and the admin panel at http://localhost
 
 ## API Endpoints
 Base URL
-** http://localhost:8000/ **
+ http://localhost:8000/ 
 1. Fitness Classes (/classes/)
 Handles CRUD operations for fitness classes.
 
@@ -256,44 +256,33 @@ View BookingsUse the GET /bookings/ endpoint with an email parameter to list all
 
 Cancel a BookingUse the DELETE /bookings/ endpoint with the booking ID to cancel a reservation. Only the booking owner or a superuser can cancel.
 
-Authentication
-
-By default, the API uses Django's session-based authentication. Obtain a token or session authentication via your login endpoint or configure Django REST Framework's token authentication (e.g., rest_framework_simplejwt).
-Example setup for token authentication:Add to requirements.txt:djangorestframework-simplejwt
-
-Update settings.py:REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
-}
 
 
 
-
-Admin PanelAccess the Django admin at http://localhost:8000/admin/ to manage classes and bookings manually.
+**Admin PanelAccess the Django admin at http://localhost:8000/admin/ to manage classes and bookings manually.**
 
 
 Testing
-Run the test suite to verify API functionality:
-python manage.py test
+- Run the test suite to verify API functionality:
+- python manage.py test
 
-The project includes 14 tests covering:
+**The project includes 14 tests covering:**
 
-Fitness class creation, retrieval, and validation.
-Booking creation, cancellation, and duplicate checks.
-Authentication and authorization checks.
-Error handling for invalid inputs (e.g., email, timezone).
+_ Fitness class creation, retrieval, and validation.
+- Booking creation, cancellation, and duplicate checks.
+- Authentication and authorization checks.
+- Error handling for invalid inputs (e.g., email, timezone).
 
 To add tests, modify booking/tests.py or create new test cases.
 Contributing
 
-Fork the repository.
-Create a feature branch (git checkout -b feature/your-feature).
-Commit changes (git commit -m "Add your feature").
-Push to the branch (git push origin feature/your-feature).
-Open a pull request.
+**Fork the repository.**
+- Create a feature branch (git checkout -b feature/your-feature).
+- Commit changes (git commit -m "Add your feature").
+- Push to the branch (git push origin feature/your-feature).
+- Open a pull request.
 
-License
+**License**
 MIT License. See LICENSE for details.
 
 Project developed by Nitesh Kumar.For support, contact: niteshsingh6206@gmial.com or GitHub Issues.
