@@ -20,6 +20,8 @@ class FitnessClass(models.Model):
     instructor = models.CharField(max_length=100)
     total_slots = models.PositiveIntegerField(default=10)
     available_slots = models.PositiveIntegerField()
+    duration=models.CharField(max_length=50, null=True)
+    Location=models.CharField(max_length=200,null=True)
 
     class Meta:
         ordering = ['date_time']

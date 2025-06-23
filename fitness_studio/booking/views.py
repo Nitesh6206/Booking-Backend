@@ -63,10 +63,10 @@ class FitnessClassView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-    def put(self, request):
+    def put(self, request,pk):
         """Update an existing fitness class."""
         try:
-            class_id = request.data.get('id')
+            class_id = pk
             if not class_id:
                 logger.warning("Class ID missing in update request")
                 return Response(
@@ -88,7 +88,7 @@ class FitnessClassView(APIView):
                 with transaction.atomic():
                     if 'total_slots' in request.data:
                         current_bookings = fitness_class.bookings.count()
-                        new_total_slots = request.data['total_slots']
+                        new_total_slots = int(request.data['total_slots'])
                         fitness_class.available_slots = max(0, new_total_slots - current_bookings)
                     serializer.save()
                     logger.info(f"Updated fitness class: {request.data.get('name', fitness_class.name)}")
@@ -107,13 +107,33 @@ class FitnessClassView(APIView):
 class BookingView(APIView):
     """Handles CRUD operations for bookings."""
 
+    def get(self, request):
+        """Retrieve bookings for a specific email."""
+        try:
+
+            bookings = Booking.objects.all().select_related('fitness_class')
+            serializer = BookingSerializer(bookings, many=True)
+            return Response(serializer.data)
+
+        except Exception as e:
+            logger.error(f"Error retrieving bookings: {str(e)}", exc_info=True)
+            return Response(
+                {"error": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
     def post(self, request):
         """Create a new booking for a fitness class."""
         try:
             serializer = BookingSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
                 with transaction.atomic():
-                    serializer.save()
+                    fitness_class = serializer.validated_data['fitness_class']
+                    if fitness_class.available_slots <= 0:
+                        raise serializers.ValidationError("No available slots for this class")
+                    fitness_class.available_slots -= 1
+                    fitness_class.save()
+                    booking = serializer.save()
                     logger.info(f"Booking created for {request.data.get('client_email')}")
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
             logger.warning(f"Booking creation failed: {serializer.errors}")
@@ -123,29 +143,6 @@ class BookingView(APIView):
             logger.error(f"Error creating booking: {str(e)}", exc_info=True)
             return Response(
                 {"error": "Internal server error"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-    def get(self, request):
-        """Retrieve bookings for a specific email."""
-        try:
-            email = request.query_params.get('email')
-            if not email:
-                logger.warning("Email parameter missing in get bookings request")
-                return Response(
-                    {"error": "Email parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            bookings = Booking.objects.filter(client_email=email).select_related('fitness_class')
-            serializer = BookingSerializer(bookings, many=True)
-            logger.info(f"Retrieved {len(bookings)} bookings for {email}")
-            return Response(serializer.data)
-
-        except Exception as e:
-            logger.error(f"Error retrieving bookings: {str(e)}", exc_info=True)
-            return Response(
-                {"error": f"Internal server error{e}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 

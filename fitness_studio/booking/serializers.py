@@ -13,7 +13,7 @@ class FitnessClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FitnessClass
-        fields = ['id', 'name', 'class_type', 'date_time', 'instructor', 'total_slots', 'available_slots']
+        fields = ['id', 'name', 'class_type', 'date_time', 'instructor','duration','Location', 'total_slots', 'available_slots']
         extra_kwargs = {
             'available_slots': {'required': False}
         }
@@ -66,10 +66,11 @@ class BookingSerializer(serializers.ModelSerializer):
         queryset=FitnessClass.objects.filter(date_time__gt=timezone.now()),
         source='fitness_class'
     )
+    fitness_class_details = FitnessClassSerializer(source='fitness_class', read_only=True)
 
     class Meta:
         model = Booking
-        fields = ['id', 'class_id', 'client_name', 'client_email', 'booking_time']
+        fields = ['id', 'class_id', 'fitness_class_details','client_name', 'client_email', 'booking_time']
         extra_kwargs = {
             'booking_time': {'required': False}
         }
@@ -93,6 +94,10 @@ class BookingSerializer(serializers.ModelSerializer):
         ).exists():
             errors.setdefault('non_field_errors', []).append("This email has already booked this class")
 
+        # Check available slots
+        if data['fitness_class'].available_slots <= 0:
+            errors.setdefault('class_id', []).append("No available slots for this class")
+
         # Perform model-level validation
         try:
             instance = Booking(**data)
@@ -103,10 +108,6 @@ class BookingSerializer(serializers.ModelSerializer):
                     errors.setdefault(field, []).extend(messages)
             else:
                 errors.setdefault('non_field_errors', []).extend(e.messages)
-        except IntegrityError as e:
-            # Handle unique constraint violation
-            if 'unique constraint' in str(e).lower():
-                errors.setdefault('non_field_errors', []).append("This email has already booked this class")
 
         if errors:
             raise serializers.ValidationError(errors)
