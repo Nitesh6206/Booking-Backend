@@ -2,16 +2,15 @@ from pathlib import Path
 from datetime import timedelta
 import os
 import dj_database_url
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-if not SECRET_KEY:
-    raise ValueError("DJANGO_SECRET_KEY environment variable not set")
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = config('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,your-backend.onrender.com').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', 'localhost').split(',')
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
@@ -84,11 +83,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fitness_studio.wsgi.application'
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable not set")
+# DATABASE_URL =config('DATABASE_URL')
+# if not DATABASE_URL:
+#     raise ValueError("DATABASE_URL environment variable not set")
+# DATABASES = {
+#     'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
+# }
+
 DATABASES = {
-    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': config('DB_USER'),
+        'PASSWORD':config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),  # Pooler port, typically 6543
+
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
