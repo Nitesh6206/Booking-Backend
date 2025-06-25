@@ -111,7 +111,7 @@ class BookingView(APIView):
         """Retrieve bookings for a specific email."""
         try:
 
-            bookings = Booking.objects.all().select_related('fitness_class')
+            bookings = Booking.objects.filter(booked_by=request.user.username).select_related('fitness_class')
             serializer = BookingSerializer(bookings, many=True)
             return Response(serializer.data)
 
@@ -134,6 +134,8 @@ class BookingView(APIView):
                     fitness_class.available_slots -= 1
                     fitness_class.save()
                     booking = serializer.save()
+                    booking.booked_by = request.user.username if request.user.is_authenticated else None
+                    booking.save()
                     logger.info(f"Booking created for {request.data.get('client_email')}")
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
             logger.warning(f"Booking creation failed: {serializer.errors}")

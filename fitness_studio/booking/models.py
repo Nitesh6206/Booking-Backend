@@ -56,6 +56,7 @@ class Booking(models.Model):
     client_name = models.CharField(max_length=100)
     client_email = models.EmailField(validators=[EmailValidator()])
     booking_time = models.DateTimeField(default=timezone.now)
+    booked_by = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         unique_together = ['fitness_class', 'client_email']
