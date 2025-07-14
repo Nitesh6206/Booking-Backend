@@ -84,27 +84,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fitness_studio.wsgi.application'
 
-# DATABASE_URL =config('DATABASE_URL')
-# if not DATABASE_URL:
-#     raise ValueError("DATABASE_URL environment variable not set")
-# DATABASES = {
-#     'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
-# }
-
+DATABASE_URL =config('DATABASE_URL')
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable not set")
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': config('DB_USER'),
-        'PASSWORD':config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),  # Pooler port, typically 6543
-
-        # 'OPTIONS': {
-        #     'sslmode': 'require',
-        # },
-    }
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'fitness_app',
+#         'USER': config('DB_USER'),
+#         'PASSWORD':config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST'),
+#         'PORT': config('DB_PORT'),  # Pooler port, typically 6543
+
+#         # 'OPTIONS': {
+#         #     'sslmode': 'require',
+#         # },
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

@@ -53,13 +53,17 @@ class Booking(models.Model):
         on_delete=models.CASCADE, 
         related_name='bookings'
     )
-    client_name = models.CharField(max_length=100)
-    client_email = models.EmailField(validators=[EmailValidator()])
+    user_details=models.ForeignKey(
+        'userprofile.UserProfile', 
+        on_delete=models.CASCADE, 
+        related_name='bookings', 
+        null=True, 
+        blank=True
+    )
     booking_time = models.DateTimeField(default=timezone.now)
-    booked_by = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
-        unique_together = ['fitness_class', 'client_email']
+        unique_together = ['fitness_class', 'user_details']
         verbose_name = 'Booking'
         verbose_name_plural = 'Bookings'
 
@@ -71,21 +75,6 @@ class Booking(models.Model):
             raise ValidationError("No slots available for this class")
         if self.booking_time > self.fitness_class.date_time:
             raise ValidationError("Cannot book after class start time")
-        if Booking.objects.filter(
-            fitness_class=self.fitness_class,
-            client_email=self.client_email
-        ).exclude(id=self.id).exists():
-            raise ValidationError("This email has already booked this class")
-
-    def save(self, *args, **kwargs):
-        """Save booking with validation and update available slots."""
-        self.full_clean()
-        if not self.pk:  # New booking
-            if self.fitness_class.available_slots <= 0:
-                raise ValidationError("No slots available for this class")
-            self.fitness_class.available_slots -= 1
-            self.fitness_class.save()
-        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.client_name} booked {self.fitness_class}"
+        return f"{self.user_details} booked {self.fitness_class}"

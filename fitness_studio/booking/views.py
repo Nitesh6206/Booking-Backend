@@ -48,6 +48,13 @@ class FitnessClassView(APIView):
         """Create a new fitness class."""
         try:
             serializer = FitnessClassSerializer(data=request.data)
+            user_role=request.user.profile.role
+            if user_role !='trainer':
+                logger.warning("Unauthorized attempt to create class by non-trainer user")
+                return Response(
+                    {"error": "Only trainers can create fitness classes"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
             if serializer.is_valid():
                 with transaction.atomic():
                     serializer.save()
@@ -111,7 +118,7 @@ class BookingView(APIView):
         """Retrieve bookings for a specific email."""
         try:
 
-            bookings = Booking.objects.filter(booked_by=request.user.username).select_related('fitness_class')
+            bookings = Booking.objects.filter(user_details=request.user.profile).select_related('fitness_class')
             serializer = BookingSerializer(bookings, many=True)
             return Response(serializer.data)
 
@@ -131,12 +138,14 @@ class BookingView(APIView):
                     fitness_class = serializer.validated_data['fitness_class']
                     if fitness_class.available_slots <= 0:
                         raise serializers.ValidationError("No available slots for this class")
-                    fitness_class.available_slots -= 1
+                    if request.data['slots'] > fitness_class.available_slots:
+                        raise serializers.ValidationError("Requested slots exceed available slots")
+                    fitness_class.available_slots -= request.data.get('slots', 1)
                     fitness_class.save()
                     booking = serializer.save()
-                    booking.booked_by = request.user.username if request.user.is_authenticated else None
+                    booking.user_details = request.user.profile if request.user.is_authenticated else None
                     booking.save()
-                    logger.info(f"Booking created for {request.data.get('client_email')}")
+                    logger.info(f"Created booking: {booking.id}")
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
             logger.warning(f"Booking creation failed: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -172,7 +181,7 @@ class BookingView(APIView):
                 booking.fitness_class.available_slots += 1
                 booking.fitness_class.save()
                 booking.delete()
-                logger.info(f"Cancelled booking {booking_id} for {booking.client_email}")
+                logger.info(f"Cancelled booking {booking_id} for {booking.user_details}")
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         except Exception as e:

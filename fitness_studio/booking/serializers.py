@@ -70,7 +70,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ['id', 'class_id', 'fitness_class_details','client_name', 'client_email', 'booking_time']
+        fields = ['id', 'class_id', 'fitness_class_details', 'booking_time']
         extra_kwargs = {
             'booking_time': {'required': False}
         }
@@ -88,11 +88,12 @@ class BookingSerializer(serializers.ModelSerializer):
             errors.setdefault('booking_time', []).append("Cannot book after class start time")
 
         # Check for duplicate booking
+            print(data,"data................."),
         if Booking.objects.filter(
             fitness_class=data['fitness_class'],
-            client_email=data['client_email']
+            user_details=data.get('userprofile', None)
         ).exists():
-            errors.setdefault('non_field_errors', []).append("This email has already booked this class")
+            errors.setdefault('non_field_errors', []).append("This user has already booked this class")
 
         # Check available slots
         if data['fitness_class'].available_slots <= 0:
