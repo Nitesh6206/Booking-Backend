@@ -7,6 +7,7 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('DJANGO_SECRET_KEY')
+GEMINI_API_KEY = config("GEMINI_API_KEY")
 
 DEBUG = config('DJANGO_DEBUG', 'False') == 'True'
 
@@ -51,7 +52,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'booking',
     'userprofile',
+    'presionalized_assistance',
 ]
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
